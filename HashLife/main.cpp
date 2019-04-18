@@ -7,9 +7,41 @@
 //
 
 #include <iostream>
+#include "HashLife.hpp"
+
+HashLife life;
+
+std::vector<unsigned long> clocks;
+
+#define mark clocks.push_back(clock())
+
+float ms(int i) {
+    return 1000.0f / (float) CLOCKS_PER_SEC * (clocks[i + 1] - clocks[i]);
+}
+
+void printAll() {
+    for(int i = 0; i < clocks.size() - 1; ++i)
+        printf("%.5f\n", ms(i));
+}
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    mark;
+    
+    life.step();
+    
+    printf("%d\n", life.node_count());
+    
+    mark;
+    
+    life.step();
+    
+    printf("%d\n", life.node_count());
+    
+    mark;
+    
+    
+    
+    printAll();
+    
     return 0;
 }

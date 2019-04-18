@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8EA63CB122659D2D0084DF34 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EA63CB022659D2D0084DF34 /* main.cpp */; };
+		8EA63CB922659D3A0084DF34 /* HashLife.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8EA63CB722659D3A0084DF34 /* HashLife.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,12 @@
 /* Begin PBXFileReference section */
 		8EA63CAD22659D2D0084DF34 /* HashLife */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HashLife; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EA63CB022659D2D0084DF34 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		8EA63CB722659D3A0084DF34 /* HashLife.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HashLife.cpp; sourceTree = "<group>"; };
+		8EA63CB822659D3A0084DF34 /* HashLife.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = HashLife.hpp; sourceTree = "<group>"; };
+		8EA63CBA2266988C0084DF34 /* Key.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Key.h; sourceTree = "<group>"; };
+		8EA63CBB226699D80084DF34 /* LifeRule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LifeRule.h; sourceTree = "<group>"; };
+		8EA63CBC2268607A0084DF34 /* HashMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HashMap.h; sourceTree = "<group>"; };
+		8EA63CBD226861100084DF34 /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Node.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +65,12 @@
 			isa = PBXGroup;
 			children = (
 				8EA63CB022659D2D0084DF34 /* main.cpp */,
+				8EA63CB722659D3A0084DF34 /* HashLife.cpp */,
+				8EA63CB822659D3A0084DF34 /* HashLife.hpp */,
+				8EA63CBC2268607A0084DF34 /* HashMap.h */,
+				8EA63CBB226699D80084DF34 /* LifeRule.h */,
+				8EA63CBD226861100084DF34 /* Node.h */,
+				8EA63CBA2266988C0084DF34 /* Key.h */,
 			);
 			path = HashLife;
 			sourceTree = "<group>";
@@ -119,6 +132,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EA63CB122659D2D0084DF34 /* main.cpp in Sources */,
+				8EA63CB922659D3A0084DF34 /* HashLife.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
