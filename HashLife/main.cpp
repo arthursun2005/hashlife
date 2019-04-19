@@ -27,21 +27,15 @@ void printAll() {
 int main(int argc, const char * argv[]) {
     mark;
     
-    life.step();
+    int n = 1;
     
-    printf("%d\n", life.node_count());
-    
-    mark;
-    
-    life.step();
-    
-    printf("%d\n", life.node_count());
+    for(int i = 0; i < n; ++i) {
+        life.step();
+    }
     
     mark;
     
-    
-    
-    printAll();
+    printf("%.5f\n", ms(0));
     
     return 0;
 }

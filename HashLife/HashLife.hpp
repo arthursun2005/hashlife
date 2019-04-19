@@ -39,17 +39,21 @@ protected:
     int root;
 
     int alloc();
+    int allocChunk(int);
     int alloc(int);
     void alloc_children(int);
+    void reserve(int);
     
     void copy(int, int);
     int clone(int);
+    int cloneAligned(int);
     
     void free(int);
     void trash(int);
     
     int apply(int);
     
+    void computeHash(int);
     void computeAllHashs(int);
     
     void expandOnce();
@@ -174,6 +178,7 @@ protected:
     Map cache;
     
     int solve(int);
+    int solveOnce(int);
     
     int next;
     
@@ -182,7 +187,7 @@ protected:
     
 public:
     
-    HashLife() : count(0), capacity(256), next(0) {
+    HashLife() : count(0), capacity(0x10000), next(0) {
         nodes = allocator.allocate(capacity);
         
         cache.setNodes(nodes);
@@ -193,7 +198,7 @@ public:
         
         nodes[capacity - 1].next = -1;
         
-        root = alloc(10);
+        root = alloc(6);
     }
     
     HashLife(const HashLife& life) {
@@ -203,9 +208,14 @@ public:
         allocator.deallocate(nodes, capacity);
     }
     
-    int node_count() const
+    inline int size() const
     {
         return count;
+    }
+    
+    const Map& getCache() const
+    {
+        return cache;
     }
     
     void step();

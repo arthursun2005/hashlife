@@ -32,15 +32,13 @@ void HashLife::step() {
 
 int HashLife::solve(int node) {
     assert(!nodes[node].isLeaf());
-    
+
     int k;
     bool found = cache.find(node, &k);
-    if(found) {
-        int n = alloc(nodes[node].level - 1);
-        copy(n, k);
-        return n;
-    }
     
+    if(found)
+        return clone(k);
+
     if(nodes[node].level == 2) {
         int n = apply(node);
         
@@ -48,31 +46,17 @@ int HashLife::solve(int node) {
         
         return n;
     }else{
-        /*
-        int w0 = ref_cnt2(node);
-        int w1 = ref_h2(nodes[node][0], nodes[node][1]);
-        int w2 = ref_h2(nodes[node][2], nodes[node][3]);
-        int w3 = ref_v2(nodes[node][0], nodes[node][2]);
-        int w4 = ref_v2(nodes[node][1], nodes[node][3]);
-        */
-        
         int s0 = ref_cnt(node);
         int s1 = ref_h(nodes[node][0], nodes[node][1]);
         int s2 = ref_h(nodes[node][2], nodes[node][3]);
         int s3 = ref_v(nodes[node][0], nodes[node][2]);
         int s4 = ref_v(nodes[node][1], nodes[node][3]);
         
-        /*
-        int c0 = ref_cnt(nodes[node][0]);
-        int c1 = ref_cnt(nodes[node][1]);
-        int c2 = ref_cnt(nodes[node][2]);
-        int c3 = ref_cnt(nodes[node][3]);
-        
-        int w5 = ref_node(c0, w1, w3, w0);
-        int w6 = ref_node(w1, c1, w0, w4);
-        int w7 = ref_node(w3, w0, c2, w2);
-        int w8 = ref_node(w0, w4, w2, c3);
-        */
+        computeHash(s0);
+        computeHash(s1);
+        computeHash(s2);
+        computeHash(s3);
+        computeHash(s4);
         
         int n0 = solve(nodes[node][0]);
         int n1 = solve(s1);
@@ -89,6 +73,11 @@ int HashLife::solve(int node) {
         int c3 = ref_node(n3, n4, n6, n7);
         int c4 = ref_node(n4, n5, n7, n8);
         
+        computeHash(c1);
+        computeHash(c2);
+        computeHash(c3);
+        computeHash(c4);
+        
         int f0 = solve(c1);
         int f1 = solve(c2);
         int f2 = solve(c3);
@@ -96,8 +85,10 @@ int HashLife::solve(int node) {
         
         int f = ref_node(f0, f1, f2, f3);
         
+        computeHash(f);
+        
         save_results(clone(node), clone(f));
-
+        
         free(s0);
         free(s1);
         free(s2);
@@ -119,82 +110,118 @@ int HashLife::solve(int node) {
         trash(n7);
         trash(n8);
         
-        
         return f;
-        
-        /*
-        solve(c5, w5);
-        solve(c6, w6);
-        solve(c7, w7);
-        solve(c8, w8);
-        
-        save_results(clone(write), read);
-         
-        
-        free(r0);
-        free(r1);
-        free(r2);
-        free(r3);
-        free(r4);
-        
-        free(w0);
-        free(w1);
-        free(w2);
-        free(w3);
-        free(w4);
-        
-        free(c0);
-        free(c1);
-        free(c2);
-        free(c3);
-        
-        free(w5);
-        free(w6);
-        free(w7);
-        free(w8);
-        
-        trash(_c0);
-        trash(_c1);
-        trash(_c2);
-        trash(_c3);
-        
-        trash(_w0);
-        trash(_w1);
-        trash(_w2);
-        trash(_w3);
-        trash(_w4);
-        
-        free(c5);
-        free(c6);
-        free(c7);
-        free(c8);
-         */
     }
 }
 
-void HashLife::computeAllHashs(int node) {
+int HashLife::solveOnce(int node) {
+    assert(!nodes[node].isLeaf());
+    
+    int k;
+    bool found = cache.find(node, &k);
+    
+    if(found)
+        return clone(k);
+    
+    if(nodes[node].level == 2) {
+        int n = apply(node);
+        
+        save_results(clone(node), clone(n));
+        
+        return n;
+    }else{
+        int s0 = ref_cnt2(node);
+        int s1 = ref_h2(nodes[node][0], nodes[node][1]);
+        int s2 = ref_h2(nodes[node][2], nodes[node][3]);
+        int s3 = ref_v2(nodes[node][0], nodes[node][2]);
+        int s4 = ref_v2(nodes[node][1], nodes[node][3]);
+        
+        computeHash(s0);
+        computeHash(s1);
+        computeHash(s2);
+        computeHash(s3);
+        computeHash(s4);
+        
+        int n1 = ref_cnt(nodes[node][0]);
+        int n2 = ref_cnt(nodes[node][1]);
+        int n3 = ref_cnt(nodes[node][2]);
+        int n4 = ref_cnt(nodes[node][3]);
+        
+        computeHash(n1);
+        computeHash(n2);
+        computeHash(n3);
+        computeHash(n4);
+        
+        int c1 = ref_node(n1, s1, s3, s0);
+        int c2 = ref_node(s1, n2, s0, s4);
+        int c3 = ref_node(s3, s0, n3, s2);
+        int c4 = ref_node(s0, s4, s2, n4);
+        
+        computeHash(c1);
+        computeHash(c2);
+        computeHash(c3);
+        computeHash(c4);
+        
+        int f0 = solve(c1);
+        int f1 = solve(c2);
+        int f2 = solve(c3);
+        int f3 = solve(c4);
+        
+        int f = ref_node(f0, f1, f2, f3);
+        
+        computeHash(f);
+        
+        save_results(clone(node), clone(f));
+        
+        free(s0);
+        free(s1);
+        free(s2);
+        free(s3);
+        free(s4);
+        
+        free(c1);
+        free(c2);
+        free(c3);
+        free(c4);
+        
+        free(n1);
+        free(n2);
+        free(n3);
+        free(n4);
+        
+        return f;
+    }
+}
+
+void HashLife::computeHash(int node) {
     size_t hash = nodes[node].level;
     if(nodes[node].isLeaf()) {
-        hash += nodes[node][0] * _hash_base_scales[0];
-        hash += nodes[node][1] * _hash_base_scales[1];
-        hash += nodes[node][2] * _hash_base_scales[2];
-        hash += nodes[node][3] * _hash_base_scales[3];
+        hash ^= nodes[node][0] * _hash_base_scales[0];
+        hash ^= nodes[node][1] * _hash_base_scales[1];
+        hash ^= nodes[node][2] * _hash_base_scales[2];
+        hash ^= nodes[node][3] * _hash_base_scales[3];
     }else{
-        computeAllHashs(nodes[node][0]);
-        computeAllHashs(nodes[node][1]);
-        computeAllHashs(nodes[node][2]);
-        computeAllHashs(nodes[node][3]);
-        
-        hash += nodes[nodes[node][0]].hash * _hash_base_scales[0];
-        hash += nodes[nodes[node][1]].hash * _hash_base_scales[1];
-        hash += nodes[nodes[node][2]].hash * _hash_base_scales[2];
-        hash += nodes[nodes[node][3]].hash * _hash_base_scales[3];
+        hash ^= nodes[nodes[node][0]].hash * _hash_base_scales[0];
+        hash ^= nodes[nodes[node][1]].hash * _hash_base_scales[1];
+        hash ^= nodes[nodes[node][2]].hash * _hash_base_scales[2];
+        hash ^= nodes[nodes[node][3]].hash * _hash_base_scales[3];
     }
     nodes[node].hash = hash;
 }
 
+void HashLife::computeAllHashs(int node) {
+    if(!nodes[node].isLeaf()) {
+        computeAllHashs(nodes[node][0]);
+        computeAllHashs(nodes[node][1]);
+        computeAllHashs(nodes[node][2]);
+        computeAllHashs(nodes[node][3]);
+    }
+    computeHash(node);
+}
+
 int HashLife::apply(int n) {
     assert(nodes[n].level == 2);
+    
     int k = alloc();
     
     const Node& node = nodes[n];
@@ -219,26 +246,37 @@ int HashLife::apply(int n) {
     return k;
 }
 
-int HashLife::alloc() {
-    if(next == -1) {
-        assert(count == capacity);
+void HashLife::reserve(int newCapacity) {
+    if(newCapacity > capacity) {
+        
+        int oldCapacity = capacity;
+        
+        capacity = newCapacity;
         
         Node* oldNodes = nodes;
         
-        capacity *= 2;
         nodes = allocator.allocate(capacity);
         
         cache.setNodes(nodes);
         
-        memcpy(nodes, oldNodes, sizeof(Node) * count);
+        memcpy(nodes, oldNodes, sizeof(Node) * oldCapacity);
         
-        allocator.deallocate(oldNodes, count);
+        allocator.deallocate(oldNodes, oldCapacity);
         
-        for(int i = count - 1; i < capacity - 1; ++i)  {
+        for(int i = oldCapacity - 1; i < capacity - 1; ++i)  {
             nodes[i].next = i + 1;
         }
         
         nodes[capacity - 1].next = -1;
+        
+    }
+}
+
+int HashLife::alloc() {
+    if(next == -1) {
+        assert(count == capacity);
+        
+        reserve(capacity * 2);
         
         next = count;
     }
@@ -252,6 +290,40 @@ int HashLife::alloc() {
     nodes[n].children.fill(-1);
 
     return n;
+}
+
+int HashLife::allocChunk(int size) {
+    reserve(count + size);
+    
+    int index = count;
+    
+    count += size;
+    
+    if(next == index)
+        next += size;
+    
+    return index;
+}
+
+int HashLife::cloneAligned(int n) {
+    int size = nodes[n].size();
+    
+    int node = allocChunk(size);
+    
+    int diff = node - n;
+    
+    for(int i = 0; i < size; ++i) {
+        if(nodes[n + i].isLeaf()) {
+            nodes[node].children = nodes[node + i].children;
+        }else{
+            nodes[node][0] = nodes[n + i][0] + diff;
+            nodes[node][1] = nodes[n + i][1] + diff;
+            nodes[node][2] = nodes[n + i][2] + diff;
+            nodes[node][3] = nodes[n + i][3] + diff;
+        }
+    }
+    
+    return node;
 }
 
 int HashLife::alloc(int level) {
